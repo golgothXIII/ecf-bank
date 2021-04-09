@@ -45,11 +45,13 @@ class User implements UserInterface
     private $firstname;
 
     /**
+     * @ORM\JoinColumn(nullable=true)
      * @ORM\OneToOne(targetEntity=Customer::class, inversedBy="user", cascade={"persist", "remove"})
      */
     private $customer;
 
     /**
+     * @ORM\JoinColumn(nullable=true)
      * @ORM\OneToOne(targetEntity=Banker::class, inversedBy="user", cascade={"persist", "remove"})
      */
     private $banker;
