@@ -3,18 +3,32 @@
 {% block title %}Hello DefaultController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="container p-3">
+    <div class="row">
+        <div class="col text-center pb-5" >
+            <h1>Bonjour </h1>
+        </div>
+    </div>
+    <div class="row align-items-center mt-3 mb-3 p-1">
+        <div class="col-12 col-lg-8 text-justify" >
+            <h2>Lorem ipsum dolor sit amet</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique eros vel augue semper pharetra. Donec vitae leo ac quam condimentum commodo nec molestie dolor. Mauris pretium tristique risus. Aenean bibendum augue nec laoreet laoreet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec sagittis ex at consequat pellentesque. Nam varius dui bibendum ullamcorper malesuada. Quisque lacinia urna nec odio dapibus eleifend. Mauris bibendum, eros ultricies congue finibus, erat libero facilisis tortor, sed congue dolor nisl eu libero. Sed scelerisque ligula et convallis dapibus. Quisque nec congue ipsum, at rhoncus est. Vivamus ligula nunc, dictum ac pharetra et, varius et erat. Ut neque lacus, finibus eu velit sed, ullamcorper scelerisque ipsum.</p>
+            <p>Pellentesque iaculis turpis purus, at pretium velit efficitur quis. Sed lacinia lacus sed ipsum auctor tincidunt. Curabitur id pharetra dolor. Aenean eu rutrum dolor, ac laoreet sem. Curabitur tempor tristique arcu, eu feugiat felis interdum sed. Nunc sit amet metus nunc. Suspendisse potenti. Donec interdum cursus laoreet. Sed at mi eu magna hendrerit consectetur eu non nulla.</p>
+        </div>
+        <div class="col-12 col-lg-4 text-center">
+            <img src="{{ asset('build/images/home/dollar.jpg') }}" class="img-fluid"  >
+        </div>
+    </div>
+    <div class="row align-items-center mt-3 mb-3 p-1">
+        <div class="col-12 col-lg-4 text-center">
+            <img src="{{ asset('build/images/home/dollar.jpg') }}" class="img-fluid"  >
+        </div>
+        <div class="col-12 col-lg-8 text-justify" >
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tristique eros vel augue semper pharetra. Donec vitae leo ac quam condimentum commodo nec molestie dolor. Mauris pretium tristique risus. Aenean bibendum augue nec laoreet laoreet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec sagittis ex at consequat pellentesque. Nam varius dui bibendum ullamcorper malesuada. Quisque lacinia urna nec odio dapibus eleifend. Mauris bibendum, eros ultricies congue finibus, erat libero facilisis tortor, sed congue dolor nisl eu libero. Sed scelerisque ligula et convallis dapibus. Quisque nec congue ipsum, at rhoncus est. Vivamus ligula nunc, dictum ac pharetra et, varius et erat. Ut neque lacus, finibus eu velit sed, ullamcorper scelerisque ipsum.</p>
+            <p>Pellentesque iaculis turpis purus, at pretium velit efficitur quis. Sed lacinia lacus sed ipsum auctor tincidunt. Curabitur id pharetra dolor. Aenean eu rutrum dolor, ac laoreet sem. Curabitur tempor tristique arcu, eu feugiat felis interdum sed. Nunc sit amet metus nunc. Suspendisse potenti. Donec interdum cursus laoreet. Sed at mi eu magna hendrerit consectetur eu non nulla.</p>
+        </div>
+    </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Formation/ecf-bank/src/Controller/DefaultController.php'|file_link(0) }}">src/Controller/DefaultController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Formation/ecf-bank/templates/default/index.html.twig'|file_link(0) }}">templates/default/index.html.twig</a></code></li>
-    </ul>
 </div>
 {% endblock %}

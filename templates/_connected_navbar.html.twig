@@ -1,0 +1,24 @@
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown m-1 mr-lg-5 text-center">
+            <a class="nav-link dropdown-toggle font-weight-bold" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <img src="{{ asset('build/images/user.svg') }}" height="40" width="40" /><br />
+                {{ app.user.lastname }}
+            </a>
+            {% if is_granted('ROLE_BANKER') %}
+                {% include '_banker_menu.html.twig' %}
+            {% endif %}
+            {% if is_granted('ROLE_CUSTOMER') %}
+                {% include '_customer_menu.html.twig' %}
+            {% endif %}
+            {% if is_granted('ROLE_VALIDATED_CUSTOMER') %}
+                {% include '_validated_customerr_menu.html.twig' %}
+            {% endif %}
+        </li>
+        <li class="nav-item bg-danger rounded-lg text-center m-1">
+            <a class="nav-link text-light font-weight-bold" href="/logout"><img src="{{ asset('build/images/logout.svg') }}" height="40" width="40" /><br />
+                se deconnecter
+            </a>
+        </li>
+    </ul>
+</div>
