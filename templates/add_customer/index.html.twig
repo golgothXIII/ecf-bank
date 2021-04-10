@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande de création de compte{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.email) }}
+        <div class="form-row">
+            <div class="form-group col-lg-6">
+                {{ form_label(form.password.first) }}
+                {{ form_widget(form.password.first) }}
+                <span class="badge badge-warning badge-pill m-0">{{ form_errors(form.password) }}</span>
+            </div>
+            <div class="form-group col-lg-6">
+                {{ form_label(form.password.second) }}
+                {{ form_widget(form.password.second) }}
+            </div>
+
+        </div>
+        <div class="form-row mt-2">
+            <div class="form-group col-lg-6">
+                {{ form_label(form.lastname) }}
+                {{ form_widget(form.lastname) }}
+            </div>
+            <div class="form-group col-lg-6">
+                {{ form_label(form.firstname) }}
+                {{ form_widget(form.firstname) }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-lg-3">
+                {{ form_label(form.birthday) }}
+                {{ form_widget(form.birthday) }}
+            </div>
+        </div>
+    {{ form_row(form.adress) }}
+
+    <div class="form-row">
+        <div class="form-group col-lg-4">
+            {{ form_label(form.zipCode) }}
+            {{ form_widget(form.zipCode) }}
+        </div>
+        <div class="form-group col-lg-8">
+            {{ form_label(form.city) }}
+            {{ form_widget(form.city) }}
+        </div>
+
+    </div>
+        {{ form_row(form.file) }}
+    <input type="submit" value="Valider" >
+    {{ form_end(form) }}
+</div>
+{% endblock %}
