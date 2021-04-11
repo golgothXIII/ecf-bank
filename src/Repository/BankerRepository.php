@@ -47,9 +47,6 @@ class BankerRepository extends ServiceEntityRepository
             ->getResult()
             ;
 
-
-
-
         $index=0;
         for ( $i=0; $i< count($bankers); $i++ ) {
             $index = $bankers[$i]['nbAccount'] < $bankers[$index]['nbAccount'] ? $i : $index;
@@ -57,9 +54,6 @@ class BankerRepository extends ServiceEntityRepository
 
         return $bankers[$index]['banker'];
     }
-
-
-
 
     // /**
     //  * @return Banker[] Returns an array of Banker objects

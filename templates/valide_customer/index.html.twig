@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation des comptes{% endblock %}
+
+{% block body %}
+<ul>
+
+{% for account in accounts %}
+<li>
+    {{ account.customer.user.lastname}} {{ account.customer.user.firstname}} - {{ account.customer.user.email}}<br/>
+    {{ account.customer.adress }} {{ account.customer.zipCode }} {{ account.customer.city }}<br />
+    <a href="/valide-customer-id/{{ account.customer.id }}" >{{ account.customer.idPath }}</a>
+</li>
+{% endfor %}
+
+</ul>
+
+{% endblock %}
