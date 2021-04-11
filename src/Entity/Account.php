@@ -48,6 +48,8 @@ class Account
     public function __construct()
     {
         $this->transfers = new ArrayCollection();
+        $this->balance = 0.0;
+
     }
 
     public function getId(): ?int
@@ -136,9 +138,16 @@ class Account
         return $this->bank_account_id;
     }
 
-    public function setBankAccountId(?string $bank_account_id): self
+    public function setBankAccountId(): self
     {
-        $this->bank_account_id = $bank_account_id;
+        // if id is set or bank_account_id already generate do nothing
+        $this->id = 100235;
+        if ( $this->id && ! $this->bank_account_id) {
+            $begin = substr( date("ymd", time() ) , -5 );
+            $end = substr("0000" . $this->id, -5 );
+            $key = (int) ($begin . $end ) % 8;
+            $this->bank_account_id = $begin . $end . $key;
+        }
 
         return $this;
     }

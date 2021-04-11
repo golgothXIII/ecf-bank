@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+    <div class="container text-center mb-5">
+        <h1>{{ contentTitle }}</h1>
+    </div>
+    <div class="container text-justify" >
+        {%  for row in content  %}
+        <p>{{ row }}</p>
+        {% endfor %}
+    </div>
+{% endblock %}

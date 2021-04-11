@@ -18,22 +18,29 @@ class AddCustomerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class, [ 'label' => 'Adresse mail']  )
+            ->add('email', EmailType::class, [ 'label' => 'Adresse mail' ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent etre identiques.',
                 'required' => true,
-                'first_options'  => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmer le mot de passe'],
+                'help' => 'Doit comporter au minimum 8 caracteres (Majuscule, minuscule, chiffre et caracteres spéciaux)',
+                'first_options'  => [ 'label' => 'Mot de passe' ],
+                'second_options' => [ 'label' => 'Confirmer le mot de passe' ],
             ])
-            ->add('lastname', TextType::class)
-            ->add('firstname', TextType::class)
-            ->add('birthday', BirthdayType::class, ['widget' => 'single_text', 'format' => 'yyyy-MM-dd' ])
-            ->add('adress', TextType::class)
-            ->add('zipCode', IntegerType::class)
-            ->add('city', TextType::class)
-            ->add('file', FileType::class)
-        ;
+            ->add('lastname', TextType::class, [ 'label' => 'Nom' ] )
+            ->add('firstname', TextType::class, [ 'label' => 'Prénom' ] )
+            ->add('birthday', BirthdayType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+                'label' => 'Date de naissance',
+            ])
+            ->add('adress', TextType::class, [ 'label' => 'Adresse' ] )
+            ->add('zipCode', IntegerType::class, [ 'label' => 'Code postal' ] )
+            ->add('city', TextType::class, [ 'label' => 'Ville' ] )
+            ->add('file', FileType::class, [
+                'label' => 'Pièces d\'identité',
+                'attr' => [ 'accept' => '.jpg, .gif, .png, .tif, .pdf' ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

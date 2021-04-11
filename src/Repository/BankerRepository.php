@@ -19,6 +19,48 @@ class BankerRepository extends ServiceEntityRepository
         parent::__construct($registry, Banker::class);
     }
 
+    /**
+     * @return Banker|null Returns the banker with the least account
+     */
+    public function findBankerWithLeastAccount(): ?Banker
+    {
+        //case where a banker does not yet have an account
+        $bankers = $this->createQueryBuilder('b')
+            ->select('b as banker, a')
+            ->leftJoin('b.accounts', 'a')
+            ->andWhere('a IS NULL')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        if ( count($bankers) > 0 ) {
+            return $bankers[0]['banker'];
+        }
+
+        $bankers =  $this->createQueryBuilder('b')
+            ->select('b as banker, COUNT(a.id) as nbAccount')
+            ->leftJoin('b.accounts', 'a')
+            ->groupBy('banker')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+
+
+
+
+        $index=0;
+        for ( $i=0; $i< count($bankers); $i++ ) {
+            $index = $bankers[$i]['nbAccount'] < $bankers[$index]['nbAccount'] ? $i : $index;
+        }
+
+        return $bankers[$index]['banker'];
+    }
+
+
+
+
     // /**
     //  * @return Banker[] Returns an array of Banker objects
     //  */
