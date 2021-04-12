@@ -22,7 +22,6 @@ class ValideCustomerController extends AbstractController
         ]);
 //        dd($this->getParameter('id_images_directory'));
 
-
         return $this->render('valide_customer/index.html.twig', [
             'accounts' => $accounts,
         ]);
@@ -32,14 +31,13 @@ class ValideCustomerController extends AbstractController
      * @Route("/valide-customer-id/{id}", name="download_id" )
      */
     public function downloadIdImage(
-        int $id,
-        AccountRepository $accountRepository,
+        string $id,
         CustomerRepository $customerRepository
     ) : Response
     {
 
         $path = $this->getParameter('id_images_directory');
-        $filename = $customerRepository->findOneBy(['id' => $id])->getIdPath();
+        $filename = $customerRepository->findByIdPath($id)->getIdPath();
 
         $content = file_get_contents($path.'/'.$filename);
 
@@ -53,4 +51,25 @@ class ValideCustomerController extends AbstractController
 
         return $response;
     }
+
+    /**
+     * @Route("/valide-customer/{id}")
+     */
+    public function valideAccountCustomer(
+        string $id,
+        CustomerRepository $customerRepository,
+        AccountRepository  $accountRepository
+    ) : Response
+    {
+        // Set the bank account id
+        $account = $customerRepository->findByIdPath($id)->getAccount();
+        $account->setBankAccountId();
+        // Add update in database.
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($account);
+        $entityManager->flush();
+        // return to valide customer module
+        return $this->redirectToRoute('valide_customer');
+    }
+
 }

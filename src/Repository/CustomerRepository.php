@@ -36,15 +36,19 @@ class CustomerRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Customer
+    /**
+     * @param $value string image name without exetension
+     * @return Customer|null return the
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByIdPath($value): ?Customer
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.id_path LIKE :val')
+            ->setParameter('val', '%'.$value.'%')
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
 }

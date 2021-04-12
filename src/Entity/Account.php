@@ -141,7 +141,6 @@ class Account
     public function setBankAccountId(): self
     {
         // if id is set or bank_account_id already generate do nothing
-        $this->id = 100235;
         if ( $this->id && ! $this->bank_account_id) {
             $begin = substr( date("ymd", time() ) , -5 );
             $end = substr("0000" . $this->id, -5 );
