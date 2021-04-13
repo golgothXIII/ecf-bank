@@ -64,8 +64,10 @@ class ValideCustomerController extends AbstractController
         // Set the bank account id
         $account = $customerRepository->findByIdPath($id)->getAccount();
         $account->setBankAccountId();
+        $account->getCustomer()->getUser()->setRoles(["ROLE_VALIDATED_CUSTOMER"]);
         // Add update in database.
         $entityManager = $this->getDoctrine()->getManager();
+
         $entityManager->persist($account);
         $entityManager->flush();
         // return to valide customer module

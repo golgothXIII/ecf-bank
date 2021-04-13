@@ -6,6 +6,7 @@ use App\Repository\BeneficiaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BeneficiaryRepository::class)
@@ -26,11 +27,17 @@ class Beneficiary
 
     /**
      * @ORM\Column(type="string", length=32)
+     * @Assert\Iban(
+     *     message = "Ce n'est pas un numéro de compte bancaire international (IBAN) valide"
+     * )
      */
     private $IBAN;
 
     /**
      * @ORM\Column(type="string", length=11)
+     * @Assert\Bic(
+     *     message = "Ce n'est pas un code d'identification d'entreprise (BIC) valide"
+     * )
      */
     private $BIC;
 
@@ -48,6 +55,11 @@ class Beneficiary
      * @ORM\ManyToOne(targetEntity=Banker::class, inversedBy="beneficiaries")
      */
     private $banker;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isValidated;
 
     public function __construct()
     {
@@ -145,6 +157,18 @@ class Beneficiary
     public function setBanker(?Banker $banker): self
     {
         $this->banker = $banker;
+
+        return $this;
+    }
+
+    public function getIsValidated(): ?bool
+    {
+        return $this->isValidated;
+    }
+
+    public function setIsValidated(bool $isValidated): self
+    {
+        $this->isValidated = $isValidated;
 
         return $this;
     }
