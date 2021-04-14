@@ -35,7 +35,6 @@ class AddCustomerController extends AbstractController
 
         $form->handleRequest($request);
 
-
         if ( $form->isSubmitted() && $form->isValid() ) {
             $data = $form->getData();
             $thereAreErrors = false;
@@ -87,8 +86,6 @@ class AddCustomerController extends AbstractController
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
-//                $entityManager->persist($customer);
- //               $entityManager->persist($account);
                 $entityManager->flush();
                 // all is good and inform user
                 return $this->render('displayInfo.html.twig', [

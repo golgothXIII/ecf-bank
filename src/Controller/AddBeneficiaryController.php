@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Beneficiary;
 use App\Form\BeneficiaryType;
+use App\Repository\BeneficiaryRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +20,9 @@ class AddBeneficiaryController extends AbstractController
      */
     public function index(
         Request $request,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        UserRepository $userRepository,
+        BeneficiaryRepository $beneficiaryRepository
     ): Response
     {
 
@@ -27,17 +32,36 @@ class AddBeneficiaryController extends AbstractController
 
         if ( $form->isSubmitted() && $form->isValid() ) {
             $data = $form->getData();
+
+            $customer = $userRepository->findOneBy(['id' => $this->getUser()->getId()])->getCustomer();
+            $banker = $customer->getAccount()->getBanker();
+
             $beneficiary = (new Beneficiary())
                 ->setLabel($data['label'])
-                ->setIBAN($data['IBAN'])
+                ->setIBAN(str_replace(' ','',$data['IBAN']))
                 ->setBIC($data['BIC'])
+                ->setBanker($banker)
+                ->setCustomer($customer)
+                ->setIsValidated(false)
             ;
+
             $errors = $validator->validate($beneficiary);
 
-            return $this->render('add_beneficiary/index.html.twig', [
-                'form' => $form->createView(),
-                'errors' => $errors,
-            ]);
+            if ( count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $form[$error->getPropertyPath()]->addError(new FormError($error->getMessage()));
+                }
+
+                return $this->render('add_beneficiary/index.html.twig', [
+                    'form' => $form->createView(),
+                        'errors' => $errors,
+                ]);
+            }
+
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager-> persist($beneficiary);
+            $entityManager->flush();
 
             return $this->render('displayInfo.html.twig', [
                 'title' => 'Demande de création d\'un bénéficiaire effectuer.',
@@ -53,6 +77,7 @@ class AddBeneficiaryController extends AbstractController
 
         return $this->render('add_beneficiary/index.html.twig', [
             'form' => $form->createView(),
+            'errors' => null
         ]);
     }
 }

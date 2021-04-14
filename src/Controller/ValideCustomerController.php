@@ -20,7 +20,6 @@ class ValideCustomerController extends AbstractController
             'bank_account_id' => null,
             'banker' => $user->getBanker()->getId()
         ]);
-//        dd($this->getParameter('id_images_directory'));
 
         return $this->render('valide_customer/index.html.twig', [
             'accounts' => $accounts,
@@ -57,8 +56,7 @@ class ValideCustomerController extends AbstractController
      */
     public function valideAccountCustomer(
         string $id,
-        CustomerRepository $customerRepository,
-        AccountRepository  $accountRepository
+        CustomerRepository $customerRepository
     ) : Response
     {
         // Set the bank account id

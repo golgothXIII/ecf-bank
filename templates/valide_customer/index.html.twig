@@ -16,7 +16,7 @@
         <div class="col-4 p-0">
             <div class="list-group" id="list-tab" role="tablist">
                 {% for account in accounts %}
-                <a class="list-group-item list-group-item-action"
+                <a class="list-group-item list-group-item-action{% if loop.index == 1 %} active{% endif %}"
                     id="list-{{ account.customer.id }}-list"
                     data-toggle="list"
                     href="#list-{{ account.customer.id }}"
@@ -32,7 +32,7 @@
             <div class="tab-content" id="nav-tabContent">
                 {% for account in accounts %}
                     {% set uniqId = account.customer.idPath|split('.').0 %}
-                    <div class="tab-pane fade border rounded-lg p-2"
+                    <div class="tab-pane fade border rounded-lg p-2{% if loop.index == 1 %} show active{% endif %}"
                          id="list-{{ account.customer.id }}"
                          role="tabpanel"
                          aria-labelledby="list-{{ account.customer.id }}-list">
