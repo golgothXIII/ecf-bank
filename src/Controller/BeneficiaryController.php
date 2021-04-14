@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class AddBeneficiaryController extends AbstractController
+class BeneficiaryController extends AbstractController
 {
     /**
      * @Route("/add-beneficiary", name="add_beneficiary")
@@ -52,7 +52,7 @@ class AddBeneficiaryController extends AbstractController
                     $form[$error->getPropertyPath()]->addError(new FormError($error->getMessage()));
                 }
 
-                return $this->render('add_beneficiary/index.html.twig', [
+                return $this->render('beneficiary/index.html.twig', [
                     'form' => $form->createView(),
                         'errors' => $errors,
                 ]);
@@ -75,9 +75,58 @@ class AddBeneficiaryController extends AbstractController
         }
 
 
-        return $this->render('add_beneficiary/index.html.twig', [
+        return $this->render('beneficiary/index.html.twig', [
             'form' => $form->createView(),
             'errors' => null
         ]);
     }
+
+    /**
+     * @Route("/valide-beneficiaries", name="valide_beneficiaries")
+     */
+
+    public function valideBeneficiaries( BeneficiaryRepository $beneficiaryRepository) : Response
+    {
+
+        $banker = $this->getUser()->getBanker();
+        $beneficiaries = $beneficiaryRepository->findBy(['banker' => $banker, 'isValidated' => false]);
+
+        return $this->render('beneficiary/valide_benificiary.html.twig',[
+            'beneficiaries' => $beneficiaries,
+            'empty_text' => 'Il n\'y aucun bénéficiaire à valider.',
+            'validation' => true,
+        ]);
+    }
+
+    /**
+     * @Route("/valide-beneficiary/{id}", name="valide_beneficiary")
+     */
+    public function valideBeneficiary(string $id, BeneficiaryRepository $beneficiaryRepository): Response
+    {
+        $beneficiary = $beneficiaryRepository->findOneBy( [ 'id' => $id ] );
+        $beneficiary->setIsValidated(true);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($beneficiary);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('valide_beneficiaries');
+    }
+
+    /**
+     * @Route("/beneficiaries", name="beneficiaries")
+     */
+    public function beneficiariesList(BeneficiaryRepository $beneficiaryRepository){
+
+        $customer = $this->getUser()->getCustomer();
+        $beneficiaries = $beneficiaryRepository->findBy(['customer' => $customer ]);
+
+        return $this->render('beneficiary/beneficiaries_list.html.twig',[
+            'beneficiaries' => $beneficiaries,
+            'empty_text' => 'Vous n\'avez aucun bénéficiaire',
+            'validation' => false,
+        ]);
+
+    }
+
 }

@@ -37,7 +37,7 @@ class Beneficiary
     /**
      * @ORM\Column(type="string", length=32)
      * @Assert\Iban(
-     *     message = "Ce n'est pas un numéro de compte bancaire international (IBAN) valide"
+     *     message = "Numéro de compte bancaire international (IBAN) invalide"
      * )
      */
     private $IBAN;
@@ -45,7 +45,7 @@ class Beneficiary
     /**
      * @ORM\Column(type="string", length=11)
      * @Assert\Bic(
-     *     message = "Ce n'est pas un code d'identification d'entreprise (BIC) valide"
+     *     message = "Code d'identifiant bancaire (BIC) invalide"
      * )
      */
     private $BIC;

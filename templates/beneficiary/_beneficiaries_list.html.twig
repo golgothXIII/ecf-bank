@@ -1,0 +1,53 @@
+{% if beneficiaries is empty %}
+    <div class="container ">
+        {{ empty_text }}
+    </div>
+{% else %}
+    <div class="container">
+        <div class="row">
+            {# List group #}
+            <div class="col-4 p-0">
+                <div class="list-group border" id="list-tab" role="tablist">
+                    {% for beneficiary in beneficiaries %}
+                        <a class="list-group-item list-group-item-action{% if loop.index == 1 %} active{% endif %}"
+                           id="list-{{ beneficiary.id }}-list"
+                           data-toggle="list"
+                           href="#list-{{ beneficiary.id }}"
+                           role="tab"
+                           aria-controls="customer{{ beneficiary.id }}">
+                            {% if beneficiary.isValidated %}<img src="{{ asset('build/images/check.svg') }}" height="20px" width="20px" title="Bénéficiaire validé" \>{% endif %}
+                            {{ beneficiary.label}}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {# Tab panes #}
+            <div class="col-8">
+                <div class="tab-content" id="nav-tabContent">
+                    {% for beneficiary in beneficiaries %}
+                        <div class="tab-pane fade border rounded-lg p-2{% if loop.index == 1 %} show active{% endif %}"
+                             id="list-{{ beneficiary.id }}"
+                             role="tabpanel"
+                             aria-labelledby="list-{{ beneficiary.id }}-list">
+                            <p class="font-weight-bold">{{ beneficiary.label}}</p>
+                            <p class="pl-3">
+                                {{ beneficiary.IBAN[0:2] }}
+                                {{ beneficiary.IBAN[2:2 ]}}
+                                {{ beneficiary.IBAN[4:] }}
+                            </p>
+                            <p class="pl-3 text-justify">{{ beneficiary.BIC }}</p>
+                            {% if validation %}
+                            <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal{{ beneficiary.IBAN }}">Valider le Bénéficiaire</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {#  #}
+    {% if validation %}
+        {% include 'beneficiary/_beneficiaries_modal.html.twig' %}
+
+    {% endif %}
+{% endif %}
