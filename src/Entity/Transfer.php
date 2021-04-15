@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\TransferRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=TransferRepository::class)
@@ -19,11 +21,15 @@ class Transfer
 
     /**
      * @ORM\Column(type="datetime")
+     * @var string A "Y-m-d H:i:s" formatted value
      */
     private $transfer_date;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\Positive(
+     *     message = "Le montant doit etre positif"
+     * )
      */
     private $amount;
 

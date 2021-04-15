@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre compte{% endblock %}
+
+{% block page_title %}L'historique de votre compte{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        {% for transfer in transfers %}
+
+            <div class="col-8" >{{ transfer.beneficiary.IBAN }}</div>
+            <div class="col-4 text-right font-weight-bold
+                {% if transfer.amount < 0 %} text-danger{% endif %}">{{ transfer.amount|number_format(2, ',', ' ') }} €</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

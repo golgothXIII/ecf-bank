@@ -54,7 +54,6 @@ class BeneficiaryController extends AbstractController
 
                 return $this->render('beneficiary/index.html.twig', [
                     'form' => $form->createView(),
-                        'errors' => $errors,
                 ]);
             }
 
@@ -77,7 +76,6 @@ class BeneficiaryController extends AbstractController
 
         return $this->render('beneficiary/index.html.twig', [
             'form' => $form->createView(),
-            'errors' => null
         ]);
     }
 
