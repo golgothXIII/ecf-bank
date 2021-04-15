@@ -39,6 +39,16 @@ class Transfer
      */
     private $beneficiary;
 
+    /**
+     * @ORM\Column(type="string", length=35)
+     */
+    private $reference;
+
+    /**
+     * @ORM\Column(type="string", length=140, nullable=true)
+     */
+    private $label;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +98,30 @@ class Transfer
     public function setBeneficiary(?Beneficiary $beneficiary): self
     {
         $this->beneficiary = $beneficiary;
+
+        return $this;
+    }
+
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    public function setReference(string $reference): self
+    {
+        $this->reference = $reference;
+
+        return $this;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(?string $label): self
+    {
+        $this->label = $label;
 
         return $this;
     }
