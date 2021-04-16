@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Transfer;
 use App\Form\TransferType;
 use App\Repository\BeneficiaryRepository;
+use App\Repository\TransferRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class TransferController extends AbstractController
      */
     public function index(
         BeneficiaryRepository $beneficiaryRepository,
+        TransferRepository $transferRepository,
         ValidatorInterface $validator,
         Request $request
     ): Response
@@ -49,6 +51,7 @@ class TransferController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
+
 
             $date = new \DateTime(date("Y-m-d h:i:s", time()));
             $transfer->setTransferDate($date);

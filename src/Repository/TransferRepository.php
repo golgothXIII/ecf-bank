@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Account;
 use App\Entity\Transfer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,22 +20,39 @@ class TransferRepository extends ServiceEntityRepository
         parent::__construct($registry, Transfer::class);
     }
 
-    // /**
-    //  * @return Transfer[] Returns an array of Transfer objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param beneficiary $account
+     * @return float Returns balance for a account
+     */
+    public function findBalanceAccount(Account $account) : float
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+        $result = $this->createQueryBuilder('t')
+            ->select('SUM(t.amount) as balance')
+            ->andWhere('t.account = :val')
+            ->setParameter('val', $account)
+            ->groupBy('t.account')
             ->getQuery()
             ->getResult()
         ;
+        return $result[0]['balance'];
     }
-    */
+
+    /**
+     * @param beneficiary $account
+     * @return int Returns number of transfer a account
+     */
+    public function numberOfTransfers(Account $account) : int
+    {
+        $result = $this->createQueryBuilder('t')
+            ->select('count(t.amount) as number')
+            ->andWhere('t.account = :val')
+            ->setParameter('val', $account)
+            ->groupBy('t.account')
+            ->getQuery()
+            ->getResult()
+        ;
+        return $result[0]['number'];
+    }
 
     /*
     public function findOneBySomeField($value): ?Transfer

@@ -5,13 +5,19 @@
 {% block page_title %}L'historique de votre compte{% endblock %}
 {% block body %}
 <div class="container">
-    <div class="row">
-        {% for transfer in transfers %}
-
-            <div class="col-8" >{{ transfer.beneficiary.IBAN }}</div>
-            <div class="col-4 text-right font-weight-bold
-                {% if transfer.amount < 0 %} text-danger{% endif %}">{{ transfer.amount|number_format(2, ',', ' ') }} €</div>
-        {% endfor %}
+    <div class="row col-12">
+        <div class="text-right font-weight-bold col-12">
+            <h3>SOLDE : <span{% if balance < 0 %} class="text-danger"{% endif %}>{{ balance|number_format(2, ',', ' ') }} €</span></h3>
+        </div>
     </div>
+    {% for transfer in transfers %}
+    <div class="row col-12{% if loop.index is divisible by(2) %} alert-secondary {% endif %}">
+        <div class="col-lg-2 text-left" >{{ transfer.transferdate.getTimestamp| date("d/m/Y") }}</div>
+        <div class="col-lg-7 col-8 text-left" >{{ transfer.reference }}</div>
+        <div class="col-lg-3 col-4 text-right font-weight-bold
+            {% if transfer.amount < 0 %} text-danger{% endif %}">{{ transfer.amount|number_format(2, ',', ' ') }} €</div>
+    </div>
+    {% endfor %}
+    {% include '_paging.html.twig' %}
 </div>
 {% endblock %}
