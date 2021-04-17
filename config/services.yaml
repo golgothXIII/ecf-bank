@@ -14,7 +14,7 @@ parameters:
     specialCharPattern: "/[@\\[\\]^_!\"#$%&'()*+,\\-.\\/:;{}<>=|~? ]/"
     minimumPasswordLength: 8
     # maximum number of lines per pagination page
-    paginationLimite: 2
+    paginationLimite: 10
 
 services:
     # default configuration for services in *this* file

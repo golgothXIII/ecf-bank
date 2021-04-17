@@ -10,6 +10,8 @@ use App\Repository\BankerRepository;
 use App\Repository\UserRepository;
 use App\Services\myServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +19,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AddCustomerController extends AbstractController
+class CustomerController extends AbstractController
 {
     /**
-     * @Route("/add-customer", name="add_customer")
+     * @Route("/add-customer", name="customer")
      */
-    public function index(
+    public function addCustomer(
         Request $request,
         UserRepository $userRepository,
         BankerRepository $bankerRepository,
@@ -99,10 +101,31 @@ class AddCustomerController extends AbstractController
             }
         }
 
-        return $this->render('add_customer/index.html.twig', [
+        return $this->render('customer/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/del-customer", name="del_customer")
+     */
+    public function delCustomer(): Response
+    {
+
+        // create the form
+        $form = $this->createFormBuilder()
+            ->add(
+                'confirmeCheck',
+                CheckboxType::class,
+                [ 'label' => 'Confirmer la suppression de votre compte' ]
+            )
+            ->getForm();
+
+        return $this->render('customer/del_customer.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 
 
     /**
@@ -116,4 +139,5 @@ class AddCustomerController extends AbstractController
         $mineType = mime_content_type($file->getRealPath());
         return preg_match($this->getParameter('id_images_allowed'), $mineType );
     }
+
 }

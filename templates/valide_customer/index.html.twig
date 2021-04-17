@@ -40,7 +40,6 @@
                         <p class="pl-3">{{ account.customer.user.email}}</p>
                         <p class="pl-3 text-justify">{{ account.customer.adress }} <br />{{ account.customer.zipCode }} <span class="text-uppercase">{{ account.customer.city }}</span></p>
                         <a type="button" class="btn btn-outline-primary btn-block" href="/valide-customer-id/{{ uniqId }}" >Visualiser la piece d'identité</a>
-                        {# <a type="button" class="btn btn-outline-primary btn-block" href="/valide-customer/{{ uniqId }}" onclick="return confirm('sur ?')">Valider le compte</a> #}
                         <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal{{ uniqId }}">Valider le compte</button>
                     </div>
                 {% endfor %}

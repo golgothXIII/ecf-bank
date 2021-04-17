@@ -53,7 +53,8 @@ class AccountController extends AbstractController
             'transfers' => $transfers,
             'balance' => $transferRepository->findBalanceAccount($account),
             'currentPage' => $page,
-            'lastPage' => $lastPage
+            'lastPage' => $lastPage,
+            'routeName' => 'account_page',
         ]);
     }
 }
