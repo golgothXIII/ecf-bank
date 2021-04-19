@@ -6,6 +6,7 @@ use App\Entity\Beneficiary;
 use App\Form\BeneficiaryType;
 use App\Repository\BeneficiaryRepository;
 use App\Repository\UserRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,7 @@ class BeneficiaryController extends AbstractController
 {
     /**
      * @Route("/add-beneficiary", name="add_beneficiary")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
      */
     public function index(
         Request $request,
@@ -81,23 +83,62 @@ class BeneficiaryController extends AbstractController
 
     /**
      * @Route("/valide-beneficiaries", name="valide_beneficiaries")
+     * @IsGranted("ROLE_BANKER")
      */
 
-    public function valideBeneficiaries( BeneficiaryRepository $beneficiaryRepository) : Response
+    public function valideBeneficiaries() : Response
+    {
+        return $this->redirectToRoute( 'valide_beneficiaries_page', [ 'page' => 1 ]);
+    }
+
+    /**
+     * @Route("/valide-beneficiaries/{page}", name="valide_beneficiaries_page")
+     * @IsGranted("ROLE_BANKER")
+     */
+
+    public function valideBeneficiariesPage(
+        int $page,
+        BeneficiaryRepository $beneficiaryRepository,
+        Request $request
+    ) : Response
     {
 
         $banker = $this->getUser()->getBanker();
-        $beneficiaries = $beneficiaryRepository->findBy(['banker' => $banker, 'isValidated' => false]);
+        $paginationLimite =  $this->getParameter('paginationLimite');
+        $nbRow = $beneficiaryRepository->numberOfBeneficiariesToValidate($banker);
+
+        // case where there is still no transfer made
+        $lastPage =  $nbRow == 0 ? 1 : ceil( $nbRow / $paginationLimite );
+
+        // if the page is out of bounds redirect to first hors last page
+        if ( $page > $lastPage) {
+            return $this->redirectToRoute($request->attributes->get('_route'), [ 'page' => $lastPage ]);
+        }
+        if ( $page < 1 ) {
+            return $this->redirectToRoute($request->attributes->get('_route'), [ 'page' => 1 ]);
+        }
+
+        $beneficiaries = $beneficiaryRepository->findBy(
+            ['banker' => $banker, 'isValidated' => false],
+            ['label' => 'asc'],
+            $paginationLimite,
+            $paginationLimite * ( $page - 1 )
+        );
 
         return $this->render('beneficiary/valide_benificiary.html.twig',[
             'beneficiaries' => $beneficiaries,
             'empty_text' => 'Il n\'y aucun bénéficiaire à valider.',
             'validation' => true,
+            'routeName' => $request->attributes->get('_route'),
+            'currentPage' => $page,
+            'lastPage' => $lastPage,
+
         ]);
     }
 
     /**
      * @Route("/valide-beneficiary/{id}", name="valide_beneficiary")
+     * @IsGranted("ROLE_BANKER")
      */
     public function valideBeneficiary(string $id, BeneficiaryRepository $beneficiaryRepository): Response
     {
@@ -113,18 +154,53 @@ class BeneficiaryController extends AbstractController
 
     /**
      * @Route("/beneficiaries", name="beneficiaries")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
      */
-    public function beneficiariesList(BeneficiaryRepository $beneficiaryRepository){
+    public function beneficiariesList()
+    {
+        return $this->redirectToRoute('beneficiaries_page', [ 'page' => 1 ]);
+    }
+
+    /**
+     * @Route("/beneficiaries/{page}", name="beneficiaries_page")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
+     */
+    public function beneficiariesListPage(
+        int $page,
+        BeneficiaryRepository $beneficiaryRepository,
+        Request $request
+    )
+    {
 
         $customer = $this->getUser()->getCustomer();
-        $beneficiaries = $beneficiaryRepository->findBy(['customer' => $customer ]);
+        $paginationLimite =  $this->getParameter('paginationLimite');
+        $nbRow = $beneficiaryRepository->numberOfBeneficiaries($customer);
+
+        // case where there is still no transfer made
+        $lastPage =  $nbRow == 0 ? 1 : ceil( $nbRow / $paginationLimite );
+
+        // if the page is out of bounds redirect to first hors last page
+        if ( $page > $lastPage) {
+            return $this->redirectToRoute($request->attributes->get('_route'), [ 'page' => $lastPage ]);
+        }
+        if ( $page < 1 ) {
+            return $this->redirectToRoute($request->attributes->get('_route'), [ 'page' => 1 ]);
+        }
+
+        $beneficiaries = $beneficiaryRepository->findBy([
+            'customer' => $customer ],
+            ['label' => 'asc'],
+            $paginationLimite,
+            $paginationLimite * ( $page - 1 )
+        );
 
         return $this->render('beneficiary/beneficiaries_list.html.twig',[
             'beneficiaries' => $beneficiaries,
             'empty_text' => 'Vous n\'avez aucun bénéficiaire',
             'validation' => false,
+            'routeName' => $request->attributes->get('_route'),
+            'currentPage' => $page,
+            'lastPage' =>$lastPage,
         ]);
-
     }
-
 }

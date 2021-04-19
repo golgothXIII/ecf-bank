@@ -1,53 +1,55 @@
 {% if beneficiaries is empty %}
-    <div class="container ">
-        {{ empty_text }}
-    </div>
+    <h4>{{ empty_text }}</h4>
 {% else %}
-    <div class="container">
-        <div class="row">
-            {# List group #}
-            <div class="col-4 p-0">
-                <div class="list-group border" id="list-tab" role="tablist">
-                    {% for beneficiary in beneficiaries %}
-                        <a class="list-group-item list-group-item-action{% if loop.index == 1 %} active{% endif %}"
-                           id="list-{{ beneficiary.id }}-list"
-                           data-toggle="list"
-                           href="#list-{{ beneficiary.id }}"
-                           role="tab"
-                           aria-controls="customer{{ beneficiary.id }}">
-                            {% if beneficiary.isValidated %}<img src="{{ asset('build/images/check.svg') }}" height="20px" width="20px" title="Bénéficiaire validé" \>{% endif %}
-                            {{ beneficiary.label}}
-                        </a>
-                    {% endfor %}
+    <div class="row d-flex">
+        {# List group #}
+        <div class="col-lg-4 col-12 p-0 order-1 order-lg-0 list-group border" id="list-tab" role="tablist">
+            {% for beneficiary in beneficiaries %}
+                <a class="list-group-item list-group-item-action{% if loop.index == 1 %} active{% endif %}"
+                   id="list-{{ beneficiary.id }}-list"
+                   data-toggle="list"
+                   href="#list-{{ beneficiary.id }}"
+                   role="tab"
+                   aria-controls="customer{{ beneficiary.id }}">
+                    {% if beneficiary.isValidated %}<img src="{{ asset('build/images/check.svg') }}" height="20px" width="20px" title="Bénéficiaire validé" \>{% endif %}
+                    {{ beneficiary.label}}
+                    {% if app.user.customer is empty  %}
+                        <span class="text-uppercase"> - {{ beneficiary.customer.user.lastname }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+        {# Tab panes #}
+        <div class="tab-content col-lg-8 col-12 order-0 order-lg-1" id="nav-tabContent">
+            {% for beneficiary in beneficiaries %}
+                <div class="tab-pane fade border mb-2 rounded-lg p-2{% if loop.index == 1 %} show active{% endif %}"
+                     id="list-{{ beneficiary.id }}"
+                     role="tabpanel"
+                     aria-labelledby="list-{{ beneficiary.id }}-list">
+                    <p class="font-weight-bold">
+                        {{ beneficiary.label}}
+                        {% if app.user.customer is empty  %}
+                            <span class="text-uppercase"> - {{ beneficiary.customer.user.lastname }}</span>
+                        {% endif %}
+                    </p>
+                    <p class="pl-3">
+                        {{ beneficiary.IBAN[0:2] }}
+                        {{ beneficiary.IBAN[2:2 ]}}
+                        {{ beneficiary.IBAN[4:] }}
+                    </p>
+                    <p class="pl-3 text-justify">{{ beneficiary.BIC }}</p>
+                    {% if validation %}
+                    <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal{{ beneficiary.IBAN }}">Valider le Bénéficiaire</button>
+                    {% endif %}
                 </div>
-            </div>
-            {# Tab panes #}
-            <div class="col-8">
-                <div class="tab-content" id="nav-tabContent">
-                    {% for beneficiary in beneficiaries %}
-                        <div class="tab-pane fade border rounded-lg p-2{% if loop.index == 1 %} show active{% endif %}"
-                             id="list-{{ beneficiary.id }}"
-                             role="tabpanel"
-                             aria-labelledby="list-{{ beneficiary.id }}-list">
-                            <p class="font-weight-bold">{{ beneficiary.label}}</p>
-                            <p class="pl-3">
-                                {{ beneficiary.IBAN[0:2] }}
-                                {{ beneficiary.IBAN[2:2 ]}}
-                                {{ beneficiary.IBAN[4:] }}
-                            </p>
-                            <p class="pl-3 text-justify">{{ beneficiary.BIC }}</p>
-                            {% if validation %}
-                            <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal{{ beneficiary.IBAN }}">Valider le Bénéficiaire</button>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-    {#  #}
+    {% if lastPage > 1 %}
+        {% include '_paging.html.twig' %}
+    {% endif %}
+    {# Modal include for validation module #}
     {% if validation %}
         {% include 'beneficiary/_beneficiaries_modal.html.twig' %}
-
     {% endif %}
 {% endif %}

@@ -49,6 +49,7 @@ class CustomerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
+
     }
 
 }

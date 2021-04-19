@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Transfer;
 use App\Form\TransferType;
 use App\Repository\BeneficiaryRepository;
-use App\Repository\TransferRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,17 +17,31 @@ class TransferController extends AbstractController
 {
     /**
      * @Route("/transfer", name="transfer")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
      */
     public function index(
         BeneficiaryRepository $beneficiaryRepository,
-        TransferRepository $transferRepository,
         ValidatorInterface $validator,
         Request $request
     ): Response
     {
 
         $customer = $this->getUser()->getCustomer();
-        $beneficiaries = $beneficiaryRepository->findBy([ 'customer' => $customer ]);
+        $beneficiaries = $beneficiaryRepository->findBy([
+            'customer' => $customer,
+            'isValidated' => true,
+        ]);
+
+        if(empty($beneficiaries)) {
+            return $this->render('displayInfo.html.twig', [
+                'title' => 'Aucun bénéficiaire',
+                'contentTitle' => 'Vous ne disposez d\'aucun bénéficiaire',
+                'content' => [ 'Vous ne pouvez faire de virement tant que vous n\'avez pas créé un bénéficiaire et que celui-ci soit validé par un banquier',
+                    'Veuillez en créer au moins un.',
+                ],
+            ]);
+
+        }
         $form = $this->createForm(TransferType::class, $beneficiaries);
         $form->handleRequest($request);
 
@@ -43,6 +57,8 @@ class TransferController extends AbstractController
             ;
 
             $errors = $validator->validate($transfer);
+
+
             if ( count($errors) > 0) {
                 foreach ($errors as $error) {
                     $form[$error->getPropertyPath()]->addError(new FormError($error->getMessage()));
@@ -55,6 +71,8 @@ class TransferController extends AbstractController
 
             $date = new \DateTime(date("Y-m-d h:i:s", time()));
             $transfer->setTransferDate($date);
+            //in the account history a transfer is negative
+            $transfer->setAmount(-$transfer->getAmount());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager-> persist($transfer);
             $entityManager->flush();
@@ -66,8 +84,6 @@ class TransferController extends AbstractController
                     'Merci pour votre confiance et a bientôt',
                 ],
             ]);
-
-
 
         }
         return $this->render('transfer/index.html.twig', [

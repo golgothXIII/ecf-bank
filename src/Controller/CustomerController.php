@@ -6,12 +6,15 @@ use App\Entity\Account;
 use App\Entity\Customer;
 use App\Entity\User;
 use App\Form\AddCustomerType;
+use App\Repository\AccountRepository;
 use App\Repository\BankerRepository;
+use App\Repository\CustomerRepository;
 use App\Repository\UserRepository;
 use App\Services\myServices;
+use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,26 +110,152 @@ class CustomerController extends AbstractController
     }
 
     /**
-     * @Route("/del-customer", name="del_customer")
+     * @Route("/customer-delete", name="customer_delete")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
      */
-    public function delCustomer(): Response
+    public function delCustomer(
+        Request $request,
+        CustomerRepository $customerRepository
+    ): Response
     {
+        if(empty($this->getUser())) {
+            return $this->render('displayInfo.html.twig', [
+                'title' => 'Demande de suppresion de compte effectuer.',
+                'contentTitle' => 'Votre demande a été prise en compte',
+                'content' => [ 'Votre demande a bien été prise en compte.',
+                    'Après vérification votre compte sera supprimé par l\'un de nos collaborateurs',
+                    'Merci pour votre confiance et a bientôt',
+                ],
+            ]);
 
-        // create the form
+        }
+
+        // create form
         $form = $this->createFormBuilder()
             ->add(
-                'confirmeCheck',
+                'checkConfirmation',
                 CheckboxType::class,
-                [ 'label' => 'Confirmer la suppression de votre compte' ]
-            )
+                [
+                    'label' => 'Veuillez confirmer votre demande de suppression de compte en cochant cette case',
+                        'attr' => [
+                        // Add JS for enabled en disable confirm button
+                        'onchange' => 'document.getElementById(\'confirmButton\').disabled = !this.checked;'
+                    ]
+                ])
             ->getForm();
 
-        return $this->render('customer/del_customer.html.twig', [
+        $form->handleRequest($request);
+
+        if ( $form->isSubmitted() && $form->isValid() ) {
+            $data = $form->getData();
+            if($data['checkConfirmation']) {
+
+                $user = $this->getUser();
+                $user->setRoles(['ROLE_TO_DELETED_CUSTOMER']);
+
+                $user->getCustomer()->getAccount()->setToDeleted(true);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('customer_delete');
+            }
+        }
+
+        return $this->render('customer/customer_delete.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
 
+    /**
+     * @Route("/customer-delete-validation", name="customer_delete_validation")
+     * @IsGranted("ROLE_BANKER")
+     */
+    public function customerDeleteValidation() : Response
+    {
+        return $this->redirectToRoute('customer_delete_validation_page', [ 'page' => 1 ]);
+    }
+
+    /**
+     * @Route("/customer-delete-validation/{page}", name="customer_delete_validation_page")
+     * @IsGranted("ROLE_BANKER")
+     */
+    public function customerDeleteValidationPage(
+        int $page,
+        AccountRepository $accountRepository,
+        Request $request
+    ) : Response
+    {
+        $banker = $this->getUser()->getBanker();
+
+        $paginationLimite =  $this->getParameter('paginationLimite');
+        $nbRow = $accountRepository->numberOfAccountToDelete($banker);
+
+        // case where there is still no transfer made
+        $lastPage = $nbRow == 0 ? 1 : ceil( $nbRow / $paginationLimite);
+        // if the page is out of bounds redirect to first hors last page
+        if ( $page > $lastPage) {
+            return $this->redirectToRoute($request->attributes->get('_route'), [ 'page' => $lastPage ]);
+        }
+        if ( $page < 1 ) {
+            return $this->redirectToRoute($request->attributes->get('_route'), [ 'page' => 1 ]);
+        }
+
+        $accounts = $accountRepository->findBy([
+            'banker' => $banker,
+            'toDeleted' => true ],
+            [],
+            $paginationLimite,
+            $paginationLimite * ( $page - 1 )
+        );
+        return $this->render('customer/customer_delete_validation.html.twig', [
+            'accounts' => $accounts,
+            'routeName' => $request->attributes->get('_route'),
+            'currentPage' => $page,
+            'lastPage' => $lastPage,
+        ]);
+    }
+
+
+
+    /**
+     * @Route("/customer-delete/{id}")
+     * @IsGranted("ROLE_BANKER")
+     */
+    public function customerDelete(
+        int $id,
+        AccountRepository $accountRepository,
+        EntityManagerInterface $entityManager
+    ) : Response
+    {
+
+        $account = $accountRepository->findOneBy([
+           'bank_account_id' => $id,
+            'toDeleted' => true,
+        ]);
+        if ( empty($account) ) {
+            return $this->render('displayInfo.html.twig', [
+                'title' => 'Erreur de suppression.',
+                'contentTitle' => 'Erreur lors de la suppression du compte',
+                'content' => [ 'Erreur lors de la suppression du compte.',
+                    'Veuillez vérifier la demande de suppresion et réessayé la confirmation de suppresion',
+                ],
+            ]);
+
+        }
+
+        $entityManager->remove($account->getCustomer()->getUser());
+        $entityManager->flush();
+
+        return $this->render('displayInfo.html.twig', [
+            'title' => 'Suppresion de compte effectuer.',
+            'contentTitle' => 'Le compte a été supprimé',
+            'content' => [ 'Le compte N° ' . $account->getBankAccountId() . ' a bien supprimé.',
+            ],
+        ]);
+    }
 
     /**
      * function checks if the file type is allowed

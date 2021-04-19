@@ -2,37 +2,44 @@
 
 namespace App\Controller;
 
-use App\Repository\AccountRepository;
 use App\Repository\TransferRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AccountController extends AbstractController
 {
     /**
      * @Route("/account", name="account")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
      */
     public function index(): RedirectResponse
     {
         return $this->redirectToRoute('account_page', [ 'page' => 1 ]);
-
-        $account = $this->getUser()->getCustomer()->getAccount();
     }
 
     /**
      * @Route("account/{page}", name= "account_page")
+     * @IsGranted("ROLE_VALIDATED_CUSTOMER")
      */
     public function accountPage(
         int $page,
-        TransferRepository $transferRepository
+        TransferRepository $transferRepository,
+
+        Request $request
     ) {
 
         $account = $this->getUser()->getCustomer()->getAccount();
         $paginationLimite =  $this->getParameter('paginationLimite');
         $nbRow = $transferRepository->numberOfTransfers($account);
-        $lastPage = ceil( $nbRow / $paginationLimite );
+        // case where there is still no transfer made
+        if ($nbRow == 0 ) {
+            $lastPage = 1;
+        } else {
+            $lastPage = ceil( $nbRow / $paginationLimite );
+        }
 
         // if the page is out of bounds redirect to first hors last page
         if ( $page > $lastPage) {
@@ -54,7 +61,7 @@ class AccountController extends AbstractController
             'balance' => $transferRepository->findBalanceAccount($account),
             'currentPage' => $page,
             'lastPage' => $lastPage,
-            'routeName' => 'account_page',
+            'routeName' => $request->attributes->get('_route'),
         ]);
     }
 }

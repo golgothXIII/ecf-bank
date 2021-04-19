@@ -13,44 +13,40 @@
     <div class="container">
     <div class="row">
         {# List group #}
-        <div class="col-4 p-0">
-            <div class="list-group" id="list-tab" role="tablist">
-                {% for account in accounts %}
-                <a class="list-group-item list-group-item-action{% if loop.index == 1 %} active{% endif %}"
-                    id="list-{{ account.customer.id }}-list"
-                    data-toggle="list"
-                    href="#list-{{ account.customer.id }}"
-                    role="tab"
-                    aria-controls="customer{{ account.customer.id }}">
-                        {{ account.customer.user.lastname}} {{ account.customer.user.firstname}}
-                </a>
-                {% endfor %}
-            </div>
+        <div class="col-lg-4 col-12 p-0 order-1 order-lg-0 list-group border" id="list-tab" role="tablist">
+            {% for account in accounts %}
+            <a class="list-group-item list-group-item-action{% if loop.index == 1 %} active{% endif %}"
+                id="list-{{ account.customer.id }}-list"
+                data-toggle="list"
+                href="#list-{{ account.customer.id }}"
+                role="tab"
+                aria-controls="customer{{ account.customer.id }}">
+                    {{ account.customer.user.lastname}} {{ account.customer.user.firstname}}
+            </a>
+            {% endfor %}
         </div>
         {# Tab panes #}
-        <div class="col-8">
-            <div class="tab-content" id="nav-tabContent">
-                {% for account in accounts %}
-                    {% set uniqId = account.customer.idPath|split('.').0 %}
-                    <div class="tab-pane fade border rounded-lg p-2{% if loop.index == 1 %} show active{% endif %}"
-                         id="list-{{ account.customer.id }}"
-                         role="tabpanel"
-                         aria-labelledby="list-{{ account.customer.id }}-list">
-                        <p class="font-weight-bold">{{ account.customer.user.lastname}} {{ account.customer.user.firstname}}</p>
-                        <p class="pl-3">{{ account.customer.user.email}}</p>
-                        <p class="pl-3 text-justify">{{ account.customer.adress }} <br />{{ account.customer.zipCode }} <span class="text-uppercase">{{ account.customer.city }}</span></p>
-                        <a type="button" class="btn btn-outline-primary btn-block" href="/valide-customer-id/{{ uniqId }}" >Visualiser la piece d'identité</a>
-                        <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal{{ uniqId }}">Valider le compte</button>
-                    </div>
-                {% endfor %}
-            </div>
+        <div class="tab-content col-lg-8 col-12 order-0 order-lg-1" id="nav-tabContent">
+            {% for account in accounts %}
+                {% set uniqId = account.customer.idPath|split('.').0 %}
+                <div class="tab-pane fade border rounded-lg  mb-2 p-2{% if loop.index == 1 %} show active{% endif %}"
+                     id="list-{{ account.customer.id }}"
+                     role="tabpanel"
+                     aria-labelledby="list-{{ account.customer.id }}-list">
+                    <p class="font-weight-bold">{{ account.customer.user.lastname}} {{ account.customer.user.firstname}}</p>
+                    <p class="pl-3">{{ account.customer.user.email}}</p>
+                    <p class="pl-3 text-justify">{{ account.customer.adress }} <br />{{ account.customer.zipCode }} <span class="text-uppercase">{{ account.customer.city }}</span></p>
+                    <a type="button" class="btn btn-outline-primary btn-block" href="/valide-customer-id/{{ uniqId }}" >Visualiser la piece d'identité</a>
+                    <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#modal{{ uniqId }}">Valider le compte</button>
+                </div>
+            {% endfor %}
         </div>
     </div>
     </div>
     {#  #}
     {% for account in accounts %}
         {% set uniqId = account.customer.idPath|split('.').0 %}
-        <div class="modal fade" id="modal{{ uniqId }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ uniqId }}Title" aria-hidden="true">
+    <div class="modal fade" id="modal{{ uniqId }}" tabindex="-1" role="dialog" aria-labelledby="modal{{ uniqId }}Title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -70,5 +66,8 @@
         </div>
     </div>
     {%  endfor %}
+    {% if lastPage > 1 %}
+        {% include '_paging.html.twig' %}
+    {% endif %}
     {% endif %}
 {% endblock %}

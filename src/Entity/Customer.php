@@ -50,7 +50,7 @@ class Customer
     private $account;
 
     /**
-     * @ORM\OneToMany(targetEntity=Beneficiary::class, mappedBy="customer")
+     * @ORM\OneToMany(targetEntity=Beneficiary::class, mappedBy="customer", cascade={"persist", "remove"})
      */
     private $Beneficiaries;
 

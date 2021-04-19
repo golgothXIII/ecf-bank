@@ -34,11 +34,11 @@ class TransferRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
-        return $result[0]['balance'];
+        return empty($result) ? 0 : $result[0]['balance'];
     }
 
     /**
-     * @param beneficiary $account
+     * @param Account $account
      * @return int Returns number of transfer a account
      */
     public function numberOfTransfers(Account $account) : int
@@ -51,7 +51,8 @@ class TransferRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
-        return $result[0]['number'];
+
+        return empty($result) ? 0 : $result[0]['number'];
     }
 
     /*

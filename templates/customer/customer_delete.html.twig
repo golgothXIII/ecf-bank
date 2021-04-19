@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suppresion de compte{% endblock %}
+
+{% block page_title %}Suppresion de votre compte.{% endblock %}
+{% block body %}
+    {{ form_start(form) }}
+    <div class="form-row mt-3">
+        <h4 class="font-weight-bold text-danger text-justify">Si vous demandez la suppression de votre compte, celui-ci ne sera plus disponible une fois confirmer et supprimer par l'un de nos collaborateurs</h4>
+    </div>
+    <div class="form-row mt-3">
+        {{ form_label( form.checkConfirmation ) }}
+        {{ form_widget( form.checkConfirmation ) }}
+    </div>
+    <div class="form-row mt-3 justify-content-center">
+        <button type="button" class="btn btn-outline-primary col-6" data-toggle="modal" data-target="#confirmeModal" disabled="true" id="confirmButton">
+            Demander la suppression de votre compte
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmeModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Suppresion de compte</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Etes vous sur de vouloir supprimer votre compte ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <input type="submit" class="btn btn-outline-primary col-6" value="Confirmer la demande" >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container  text-center">
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

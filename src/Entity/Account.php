@@ -25,7 +25,7 @@ class Account
     private $balance;
 
     /**
-     * @ORM\OneToMany(targetEntity=Transfer::class, mappedBy="account")
+     * @ORM\OneToMany(targetEntity=Transfer::class, mappedBy="account", cascade={"persist", "remove"})
      */
     private $transfers;
 
@@ -45,10 +45,16 @@ class Account
      */
     private $bank_account_id;
 
+    /**
+     * @ORM\Column(type="boolean", options={ "default" : false } )
+     */
+    private $toDeleted;
+
     public function __construct()
     {
         $this->transfers = new ArrayCollection();
         $this->balance = 0.0;
+        $this->toDeleted = false;
 
     }
 
@@ -147,6 +153,18 @@ class Account
             $key = (int) ($begin . $end ) % 8;
             $this->bank_account_id = $begin . $end . $key;
         }
+
+        return $this;
+    }
+
+    public function getToDeleted(): ?bool
+    {
+        return $this->toDeleted;
+    }
+
+    public function setToDeleted(bool $toDeleted): self
+    {
+        $this->toDeleted = $toDeleted;
 
         return $this;
     }

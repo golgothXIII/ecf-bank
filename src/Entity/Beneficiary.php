@@ -51,7 +51,7 @@ class Beneficiary
     private $BIC;
 
     /**
-     * @ORM\OneToMany(targetEntity=Transfer::class, mappedBy="beneficiary")
+     * @ORM\OneToMany(targetEntity=Transfer::class, mappedBy="beneficiary", cascade={"persist", "remove"})
      */
     private $transfers;
 
@@ -61,7 +61,7 @@ class Beneficiary
     private $customer;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Banker::class, inversedBy="beneficiaries")
+     * @ORM\ManyToOne(targetEntity=Banker::class, inversedBy="beneficiaries", )
      */
     private $banker;
 

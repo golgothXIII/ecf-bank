@@ -4,20 +4,29 @@
 
 {% block page_title %}L'historique de votre compte{% endblock %}
 {% block body %}
-<div class="container">
     <div class="row col-12">
         <div class="text-right font-weight-bold col-12">
             <h3>SOLDE : <span{% if balance < 0 %} class="text-danger"{% endif %}>{{ balance|number_format(2, ',', ' ') }} €</span></h3>
         </div>
     </div>
     {% for transfer in transfers %}
-    <div class="row col-12{% if loop.index is divisible by(2) %} alert-secondary {% endif %}">
+    <div class="row alert-link text-dark col-12{% if loop.index is divisible by(2) %} alert-info {% endif %}"
+         data-toggle="collapse"
+         data-target="#collapse{{ transfer.id }}"
+         aria-expanded="false"
+         aria-controls="collapse{{ transfer.id }}"
+    >
         <div class="col-lg-2 text-left" >{{ transfer.transferdate.getTimestamp| date("d/m/Y") }}</div>
-        <div class="col-lg-7 col-8 text-left" ><span class="font-weight-bold">{{ transfer.beneficiary.label }}</span><br/>{{ transfer.reference }}</div>
-        <div class="col-lg-3 col-4 text-right font-weight-bold
+        <div class="col-lg-7 text-left" ><span class="font-weight-bold">{{ transfer.beneficiary.label }}</div>
+        <div class="col-lg-3 text-right font-weight-bold
             {% if transfer.amount < 0 %} text-danger{% endif %}">{{ transfer.amount|number_format(2, ',', ' ') }} €</div>
+        <div class="collapse container" id="collapse{{ transfer.id }}">
+            Réf : {{ transfer.reference }}<br />
+            {{ transfer.label }}
+        </div>
     </div>
     {% endfor %}
-    {% include '_paging.html.twig' %}
-</div>
+    {% if transfers is not empty  and lastPage > 1 %}
+        {% include '_paging.html.twig' %}
+    {% endif %}
 {% endblock %}

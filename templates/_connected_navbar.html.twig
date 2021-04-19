@@ -12,7 +12,10 @@
                 {% include '_customer_menu.html.twig' %}
             {% endif %}
             {% if is_granted('ROLE_VALIDATED_CUSTOMER') %}
-                {% include '_validated_customerr_menu.html.twig' %}
+                {% include '_validated_customer_menu.html.twig' %}
+            {% endif %}
+            {% if is_granted('ROLE_TO_DELETED_CUSTOMER') %}
+                {% include '_to_deleted_customer_menu.html.twig' %}
             {% endif %}
         </li>
         <li class="nav-item bg-danger rounded-lg text-center m-1">

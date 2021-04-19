@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Demande de création d'un bénéficiaire{% endblock %}
+{% block title %}Viremment{% endblock %}
 
-{% block page_title %}Demande de création d'un bénéficiaire{% endblock %}
+{% block page_title %}Effectué un virement{% endblock %}
 {% block body %}
 <div class="container">
     {{ form_start(form) }}
@@ -25,6 +25,11 @@
     <div class="form-row">
         <div class="form-group col-12">
             {{ form_label(form.amount) }}{{ form_widget(form.amount) }}
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="container  text-center">
+            <input type="submit" class="btn btn-outline-primary col-6" value="Valider" >
         </div>
     </div>
 
