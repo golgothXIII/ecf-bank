@@ -3,12 +3,15 @@
         {% if currentPage != 1 %}
         <li class="page-item">
             <a class="page-link" href="{{ path(routeName, {'page' : 1} ) }}" ><<</a>
-
-            <li class="page-item"><a class="page-link" href="{{ path(routeName, {'page' : currentPage - 1} ) }}">{{ currentPage - 1 }}</a></li>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="{{ path(routeName, {'page' : currentPage - 1} ) }}">{{ currentPage - 1 }}</a>
         </li>
         {% endif %}
         <li class="page-item active">
-            <a class="page-link" href="{{ path(routeName, {'page' : currentPage} ) }}">{{ currentPage }} <span class="sr-only">(current)</span></a>
+            <a class="page-link" href="{{ path(routeName, {'page' : currentPage} ) }}">
+                {{ currentPage }} <span class="sr-only">(current)</span>
+            </a>
         </li>
         {% if currentPage < lastPage %}
             <li class="page-item"><a class="page-link" href="{{ path(routeName, {'page' : currentPage + 1} ) }}">{{ currentPage + 1 }}</a></li>

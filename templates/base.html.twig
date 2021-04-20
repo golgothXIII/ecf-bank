@@ -16,11 +16,9 @@
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
-
 </head>
 <body class="container-fluid">
     {% include '_header.html.twig' %}
-
     <main class="container-fluid bg-light pb-5">
         <div class="container text-center pt-3 pb-3">
             <h1 class="text-uppercase font-italic font-weight-bold" >{% block page_title %}Bienvenue chez nous{% endblock %}</h1>
@@ -29,6 +27,8 @@
         {% block body %}{% endblock %}
         </div>
     </main>
-    <footer class="text-center fixed-bottom bg-white">Golgoth XIII - <img src="{{ asset('build/images/my-logo.svg') }}" height="20" width="20" /> 2021 </footer>
+    <footer class="text-center fixed-bottom bg-white">
+        Golgoth XIII - <img src="{{ asset('build/images/my-logo.svg') }}" height="20" width="20" /> 2021
+    </footer>
 </body>
 </html>

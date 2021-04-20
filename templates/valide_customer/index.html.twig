@@ -6,11 +6,8 @@
 
 {% block body %}
     {% if accounts is empty %}
-    <div class="container ">
         Il n'y aucun compte a valider.
-    </div>
     {% else %}
-    <div class="container">
     <div class="row">
         {# List group #}
         <div class="col-lg-4 col-12 p-0 order-1 order-lg-0 list-group border" id="list-tab" role="tablist">
@@ -41,7 +38,6 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
     </div>
     {#  #}
     {% for account in accounts %}

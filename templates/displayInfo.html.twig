@@ -5,9 +5,5 @@
 {% block page_title %}{{ contentTitle }}{% endblock %}
 
 {% block body %}
-    <div class="container text-justify" >
-        {%  for row in content  %}
-        <p>{{ row }}</p>
-        {% endfor %}
-    </div>
+    {%  for row in content  %}<p>{{ row }}</p>{% endfor %}
 {% endblock %}

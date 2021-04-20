@@ -1,3 +1,10 @@
+body {
+  font-family: Calibri;
+  font-style: italic;
+}
 
+$primary: #0082A9;
+$info: #55D7F3;
+$black: #2D303B;
 
 @import '~bootstrap/scss/bootstrap';
